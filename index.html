@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ResQ India — Rescue Surplus Food, Save 50%+</title>
+<meta name="description" content="Buy surplus food from restaurants, bakeries, supermarkets and shops near you at 50%+ off, while cutting food waste and carbon emissions." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="logo"><span class="dot"></span> ResQ <span style="color:var(--vermilion)">India</span></div>
+    <nav class="nav-links">
+      <button data-nav="browse" class="active">Browse deals</button>
+      <button data-nav="box">Build a box</button>
+      <button data-nav="clubs">Rescue clubs</button>
+      <button data-nav="dashboard">My impact</button>
+      <button data-nav="sell">Sell surplus</button>
+    </nav>
+    <div class="header-actions">
+      <span id="pointsPill" class="pill-stat">⭐ <span id="pointsVal">0</span> pts</span>
+      <button class="btn btn-ghost btn-sm" id="loginBtn">Log in</button>
+      <button class="btn btn-dark btn-sm" id="signupBtn">Sign up</button>
+    </div>
+  </div>
+</header>
+
+<div style="background:var(--marigold-soft); color:var(--ink); font-family:var(--font-mono); font-size:12.5px; text-align:center; padding:8px 16px;">
+  📦 Demo mode: all data (orders, sellers, points) is stored only in <em>this browser</em> via localStorage — nothing is shared with other visitors. <a href="#" id="resetDataLink" style="color:var(--vermilion); font-weight:700;">Reset demo data</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow" style="background:rgba(62,133,88,.18); color:#8FE0AC;">🇮🇳 Built for Indian shops &amp; buyers</span>
+      <h1>Good food doesn't<br/>deserve the bin.<br/><span class="hl">Rescue it at 50%+ off.</span></h1>
+      <p class="lead">ResQ India lets anyone — restaurants, bakeries, supermarkets, sweet shops, or an FSSAI-licensed home kitchen — list surplus food for people nearby to order — always at least half price, picked up by you. Every order shows exactly how much food, water and CO₂ you saved.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" data-nav="browse">Find deals near me</button>
+        <button class="btn btn-ghost" style="color:var(--paper); border-color:var(--line-dark);" data-nav="sell">Register as a seller</button>
+      </div>
+      <div class="hero-trust">
+        <div><b id="statSellers">–</b><br/>verified sellers</div>
+        <div><b id="statListings">–</b><br/>live deals right now</div>
+        <div><b>50%+</b><br/>guaranteed minimum discount</div>
+      </div>
+    </div>
+
+    <div class="board" aria-label="Live rescue deals ticker">
+      <div class="board-head">
+        <span class="board-title"><span class="live-dot"></span>Live rescue board</span>
+        <span class="board-title" id="clock">--:--</span>
+      </div>
+      <div class="ticker-viewport">
+        <div class="ticker-track" id="tickerTrack">
+          <span class="ticker-item">Loading live deals…</span>
+        </div>
+      </div>
+      <div class="board-foot">
+        <div class="mini-stat"><div class="n" id="boardKg">0</div><div class="l">kg rescued today</div></div>
+        <div class="mini-stat"><div class="n" id="boardCo2">0</div><div class="l">kg CO₂ saved</div></div>
+        <div class="mini-stat"><div class="n" id="boardMoney">₹0</div><div class="l">saved by buyers</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="container">
+  <div class="section-head">
+    <div><h2>How a rescue works</h2><p>Three steps, same as picking up any online order — except this one saves food and money.</p></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="num">01 / BROWSE</div><h3>Find surplus nearby</h3><p>Restaurants, bakeries, supermarkets and sweet shops list today's extra stock — always 50% off or more.</p></div>
+    <div class="step"><div class="num">02 / RESERVE</div><h3>Pay in the app</h3><p>Build your own box, join a flash sale, or grab a fixed-price Chef Rescue Box. Add a donation if you like.</p></div>
+    <div class="step"><div class="num">03 / PICK UP</div><h3>Collect &amp; track impact</h3><p>Walk in before the pickup window closes. We calculate the kg of food, litres of water and kg of CO₂ you just saved.</p></div>
+  </div>
+</section>
+
+<!-- ================= BROWSE ================= -->
+<section class="container" id="view-browse">
+  <div class="section-head">
+    <div><h2>Live deals near you</h2><p>Every item here is already discounted 50% or more — sorted by what's expiring soonest.</p></div>
+  </div>
+  <div class="filter-row" id="filterRow">
+    <button class="chip active" data-filter="all">All</button>
+    <button class="chip" data-filter="bakery">Bakery</button>
+    <button class="chip" data-filter="meal">Meals</button>
+    <button class="chip" data-filter="buffet">Buffet</button>
+    <button class="chip" data-filter="vegetables">Vegetables</button>
+    <button class="chip" data-filter="fruits">Fruits</button>
+    <button class="chip" data-filter="dairy">Dairy</button>
+    <button class="chip" data-filter="sweets">Sweets</button>
+    <button class="chip" data-flash="true">⚡ Flash sales only</button>
+  </div>
+  <div class="grid" id="listingsGrid"><p>Loading deals…</p></div>
+</section>
+
+<!-- ================= BUILD A BOX ================= -->
+<section class="container" id="view-box">
+  <div class="section-head">
+    <div><h2>Build your own rescue box</h2><p>Add items from the deals above into your box, add an optional donation, then check out. One seller per box keeps pickup to a single stop.</p></div>
+  </div>
+  <div class="box-panel">
+    <div id="boxHelp" class="form-card" style="max-width:100%;">
+      <p style="margin:0;color:var(--ink-soft);">Tap <strong>“Add to box”</strong> on any deal in <em>Browse deals</em> above — your items will appear in the summary on the right, along with your live savings.</p>
+      <div id="recipeBox" class="hidden">
+        <h4 style="margin-top:18px;">🍳 What to make with it</h4>
+        <ul id="recipeList" style="color:var(--ink-soft); font-size:14px;"></ul>
+      </div>
+    </div>
+    <div class="cart-card">
+      <h3>Your box</h3>
+      <div id="cartLines"><p style="opacity:.7;font-size:13.5px;">Empty — add something delicious.</p></div>
+      <div class="donation-row">
+        <label for="donationInput" style="flex:1;">🙏 Add a donation (meals for local NGOs)</label>
+        <input type="number" id="donationInput" value="0" min="0" step="10"/>
+      </div>
+      <div class="cart-total"><span>Total</span><span id="cartTotal" class="mono">₹0</span></div>
+      <p style="font-size:12px; opacity:.7; margin:6px 0 16px;" id="cartSavings">You'll save ₹0 vs. original price</p>
+      <button class="btn btn-primary" style="width:100%;" id="checkoutBtn">Checkout &amp; reserve pickup</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEIGHBORHOOD RESCUE CLUBS ================= -->
+<section class="container" id="view-clubs">
+  <div class="section-head">
+    <div><h2>Neighborhood Rescue Clubs</h2><p>Get 5+ neighbours to commit and unlock an extra bulk discount on top of the listing — great for apartment societies.</p></div>
+  </div>
+  <div id="clubsGrid" class="grid"><p style="color:var(--ink-soft);">No open clubs yet — start one from any listing's detail, or try the demo below.</p></div>
+  <button class="btn btn-ghost btn-sm" id="demoClubBtn" style="margin-top:14px;">+ Start a demo club on the first flash deal</button>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section class="container" id="view-dashboard">
+  <div class="section-head">
+    <div><h2>My impact dashboard</h2><p>Log in to see how much food, water, CO₂ and money you've rescued.</p></div>
+  </div>
+  <div id="dashboardLoggedOut" class="form-card">
+    <p>Log in or sign up to see your personal carbon savings dashboard, points and badges.</p>
+    <button class="btn btn-primary" id="dashLoginBtn">Log in / Sign up</button>
+  </div>
+  <div id="dashboardContent" class="hidden">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="n" id="dashKg">0 kg</div><div class="l">Food rescued</div></div>
+      <div class="stat-card"><div class="n" id="dashCo2">0 kg</div><div class="l">CO₂ avoided</div></div>
+      <div class="stat-card"><div class="n" id="dashWater">0 L</div><div class="l">Water saved</div></div>
+      <div class="stat-card"><div class="n" id="dashMoney">₹0</div><div class="l">Money saved</div></div>
+    </div>
+    <div class="gauge-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#F3E8D0" stroke-width="14"/>
+        <circle id="gaugeCircle" cx="60" cy="60" r="52" fill="none" stroke="#3E8558" stroke-width="14" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)"/>
+        <text x="60" y="66" text-anchor="middle" font-family="IBM Plex Mono" font-size="20" font-weight="700" fill="#0F2420" id="gaugeText">0</text>
+      </svg>
+      <div>
+        <h4 style="margin-bottom:4px;">Your rescue badges</h4>
+        <div class="badge-row" id="badgeRow"><span style="color:var(--ink-soft); font-size:13px;">Place your first order to earn "First Rescue" 🎉</span></div>
+        <p style="font-size:13px; color:var(--ink-soft); margin-top:10px;" id="equivText"></p>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:40px;">
+      <div><h2 style="font-size:22px;">🏆 Community leaderboard</h2></div>
+    </div>
+    <div class="form-card" style="max-width:100%;" id="leaderboardCard"><p>Loading…</p></div>
+  </div>
+</section>
+
+<!-- ================= SELLER REGISTRATION ================= -->
+<section class="container" id="view-sell">
+  <div class="section-head">
+    <div><h2>Sell your surplus food</h2><p><strong>Anyone can sell</strong> — restaurants, supermarkets, bakeries, sweet shops, caterers, tiffin services, or an individual running a home kitchen — as long as you hold a valid Indian FSSAI food license. Licensing is what makes someone eligible, not the size of the business.</p></div>
+  </div>
+  <div id="sellerAlert"></div>
+  <div class="form-card">
+    <div class="form-row"><label>Business name</label><input id="s_businessName" placeholder="e.g. Anand Bakers"/></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Owner / manager name</label><input id="s_ownerName" placeholder="Full name"/></div>
+      <div class="form-row"><label>Shop type</label>
+        <select id="s_shopType">
+          <option value="restaurant">Restaurant</option>
+          <option value="bakery">Bakery</option>
+          <option value="supermarket">Supermarket</option>
+          <option value="sweet_shop">Sweet shop</option>
+          <option value="tiffin_service">Tiffin service</option>
+          <option value="caterer">Caterer</option>
+          <option value="grocery">Grocery / kirana</option>
+          <option value="individual">Individual / home kitchen</option>
+          <option value="other">Other food shop</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Email</label><input id="s_email" type="email" placeholder="shop@example.com"/></div>
+      <div class="form-row"><label>Phone (10-digit)</label><input id="s_phone" placeholder="98XXXXXXXX"/></div>
+    </div>
+    <div class="form-row"><label>Password</label><input id="s_password" type="password" placeholder="Min. 6 characters"/></div>
+    <div class="form-grid-2">
+      <div class="form-row">
+        <label>FSSAI license number (required, 14 digits)</label>
+        <input id="s_fssai" placeholder="12345678901234" maxlength="14"/>
+        <span class="help-text">Find this on your FSSAI certificate or at foscos.fssai.gov.in</span>
+      </div>
+      <div class="form-row"><label>GST number (optional)</label><input id="s_gst" placeholder="Optional"/></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Address</label><input id="s_address" placeholder="Shop address"/></div>
+      <div class="form-row"><label>City</label><input id="s_city" placeholder="e.g. Bengaluru"/></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="sellerSubmitBtn">Register as a seller</button>
+    <p class="help-text" style="margin-top:10px;">Registration format-checks your FSSAI number. A team member verifies it against FoSCoS before you can publish listings.</p>
+  </div>
+
+  <div class="section-head" style="margin-top:56px;">
+    <div><h2 style="font-size:22px;">Already verified? List surplus stock</h2></div>
+  </div>
+  <div id="listingAlert"></div>
+  <div class="form-card">
+    <div class="form-row"><label>Your seller ID</label><input id="l_sellerId" placeholder="Paste the seller ID you received on registration"/></div>
+    <div class="form-row"><label>Item title</label><input id="l_title" placeholder="e.g. Assorted bread & buns box"/></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Category</label>
+        <select id="l_category">
+          <option value="bakery">Bakery</option>
+          <option value="meal">Meal</option>
+          <option value="buffet">Buffet leftovers</option>
+          <option value="vegetables">Vegetables</option>
+          <option value="fruits">Fruits</option>
+          <option value="dairy">Dairy</option>
+          <option value="rice">Rice</option>
+          <option value="sweets">Sweets</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Original price (₹)</label><input id="l_price" type="number" placeholder="500"/></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Discount % (min. 50, auto-corrected if lower)</label><input id="l_discount" type="number" value="50"/></div>
+      <div class="form-row"><label>Weight per unit (kg)</label><input id="l_weight" type="number" step="0.1" value="1"/></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Quantity available</label><input id="l_qty" type="number" value="10"/></div>
+      <div class="form-row"><label>Pickup deadline (hours from now)</label><input id="l_hours" type="number" value="4"/></div>
+    </div>
+    <button class="btn btn-marigold" style="width:100%;" id="askAiPriceBtn" type="button">🤖 Ask AI for a smart discount suggestion</button>
+    <p id="aiPriceSuggestion" class="help-text" style="margin:10px 0;"></p>
+    <button class="btn btn-primary" style="width:100%; margin-top:6px;" id="listingSubmitBtn">Publish listing</button>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-grid">
+    <div>
+      <div class="logo" style="color:var(--paper);"><span class="dot"></span>ResQ India</div>
+      <p style="font-size:13.5px; max-width:38ch; margin-top:10px;">India's neighbourhood surplus-food marketplace — every order is at least 50% off and comes with its saved-food, water and CO₂ receipt.</p>
+    </div>
+    <div>
+      <h4>Revenue model</h4>
+      <ul><li>10–20% commission per order</li><li>Business subscriptions</li><li>Premium buyer membership</li><li>Featured listings</li><li>Delivery fees</li></ul>
+    </div>
+    <div>
+      <h4>Roadmap</h4>
+      <ul><li>WhatsApp ordering</li><li>Event &amp; wedding leftover rescue</li><li>Farmer produce surplus</li><li>Florists &amp; overstock goods</li></ul>
+    </div>
+    <div>
+      <h4>Platform</h4>
+      <ul><li>50%+ discount, always</li><li>FSSAI-verified sellers only</li><li>AI smart pricing</li><li>Carbon savings dashboard</li></ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 ResQ India — demo build. Not a live production service.</span>
+    <span>Made to fight food waste, one rescue at a time.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<!-- Simple auth modal -->
+<div id="authModal" class="hidden" style="position:fixed; inset:0; background:rgba(15,36,32,.55); z-index:80; display:flex; align-items:center; justify-content:center;">
+  <div class="form-card" style="width:92%; max-width:420px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 id="authTitle" style="margin:0;">Log in</h3>
+      <button class="btn btn-ghost btn-sm" id="closeAuthBtn">✕</button>
+    </div>
+    <div id="authAlert"></div>
+    <div id="nameRow" class="form-row"><label>Name</label><input id="a_name" placeholder="Your name"/></div>
+    <div id="phoneRow" class="form-row"><label>Phone (10-digit)</label><input id="a_phone" placeholder="98XXXXXXXX"/></div>
+    <div class="form-row"><label>Email</label><input id="a_email" type="email" placeholder="you@example.com"/></div>
+    <div class="form-row"><label>Password</label><input id="a_password" type="password" placeholder="Min. 6 characters"/></div>
+    <button class="btn btn-primary" style="width:100%;" id="authSubmitBtn">Log in</button>
+    <p style="text-align:center; font-size:13px; margin-top:12px;">
+      <a href="#" id="toggleAuthMode" style="color:var(--vermilion); font-weight:600;">Need an account? Sign up</a>
+    </p>
+  </div>
+</div>
+
+<script src="js/store.js"></script>
+<script src="js/cryptoUtils.js"></script>
+<script src="js/aiEngine.js"></script>
+<script src="js/validators.js"></script>
+<script src="js/seedData.js"></script>
+<script src="js/backend.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
